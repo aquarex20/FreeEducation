@@ -85,14 +85,17 @@ public class welcomePage extends Fragment implements MyRecyclerViewAdapter.ItemC
         super.onViewCreated(view, savedInstanceState);
         RecyclerView myRecyclerView= binding.recyclerView;
         myRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        ArrayList<String> animalNames = new ArrayList<>();
-        animalNames.add("Horse");
-        animalNames.add("Cow");
-        animalNames.add("Camel");
-        animalNames.add("Sheep");
-        animalNames.add("Goat");
-        myRecyclerView.setAdapter(new MyRecyclerViewAdapter(getContext(), animalNames));
-        adapter = new MyRecyclerViewAdapter(getContext(), animalNames);
+        ArrayList<Technology> technologies = new ArrayList<>();
+        technologies.add(new Technology("Python", "The easiest language to start with!",R.drawable.python));
+        technologies.add(new Technology("C++", "The easiest language to start with!",R.drawable.cpp));
+        technologies.add(new Technology("Java", "The easiest language to start with!",R.drawable.java));
+
+        technologies.add(new Technology("Unity", "The easiest language to start with!",R.drawable.unity));
+
+        technologies.add(new Technology("Html", "The easiest language to start with!",R.drawable.html));
+
+        myRecyclerView.setAdapter(new MyRecyclerViewAdapter(getContext(), technologies));
+        adapter = new MyRecyclerViewAdapter(getContext(), technologies);
         adapter.setClickListener((MyRecyclerViewAdapter.ItemClickListener) this);
         myRecyclerView.setAdapter(adapter);
 

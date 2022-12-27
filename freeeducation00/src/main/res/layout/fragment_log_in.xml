@@ -15,7 +15,7 @@
     <!-- TODO: Update blank fragment layout -->
 
     <EditText
-        android:id="@+id/logInMail"
+        android:id="@+id/logInPassword"
         android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -25,7 +25,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.153"
         app:layout_constraintStart_toEndOf="@+id/logInPasswordMessage"
-        app:layout_constraintTop_toBottomOf="@+id/logInPassword"
+        app:layout_constraintTop_toBottomOf="@+id/logInMail"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <TextView
@@ -35,13 +35,13 @@
         android:layout_marginStart="48dp"
         android:layout_marginTop="36dp"
         android:text="Password:"
-        app:layout_constraintBottom_toBottomOf="@+id/logInMail"
+        app:layout_constraintBottom_toBottomOf="@+id/logInPassword"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logInMailMessage"
         app:layout_constraintVertical_bias="1.0" />
 
     <EditText
-        android:id="@+id/logInPassword"
+        android:id="@+id/logInMail"
         android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -61,9 +61,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
         android:text="Mail:"
-        app:layout_constraintBottom_toBottomOf="@+id/logInPassword"
+        app:layout_constraintBottom_toBottomOf="@+id/logInMail"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/logInPassword"
+        app:layout_constraintTop_toTopOf="@+id/logInMail"
         app:layout_constraintVertical_bias="0.923" />
 
     <Button
@@ -75,7 +75,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logInMail" />
+        app:layout_constraintTop_toBottomOf="@+id/logInPassword" />
 
     <Button
         android:id="@+id/createAccountButton"

@@ -15,6 +15,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.example.freeeducation00.databinding.FragmentCreateAccountBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,6 +28,8 @@ public class CreateAccountFragment extends Fragment {
 
     private FragmentCreateAccountBinding binding;
     private DBHandler db;
+    boolean alreadyExists=false;
+
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference();
@@ -50,31 +55,34 @@ public class CreateAccountFragment extends Fragment {
         EditText pswrd=binding.CreateAccountPassword;
         Button submitButton=binding.CreateAccountButtonCreate;
         Button logInButton= binding.LogInButton;
-        submitButton.setOnClickListener(view1 ->{
+        submitButton.setOnClickListener( view1 ->{
             String mailText=mail.getText().toString();
             String passwordText=pswrd.getText().toString();
 
             if (mailText!=""&&passwordText!="") {
                 db.addNewUser(mailText, passwordText);
-                Log.d("tester", (String) myRef.child("users").orderByChild("mail").equalTo(mailText).limitToFirst(1).get().getResult().getValue());
+                myRef.child("users").orderByChild("mail").equalTo(mailText).get().addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        myRef.child("users").push().setValue(new UserInfo(mailText, passwordText));
+                        Toast.makeText(getContext(), "Account Successfully Created, log in",Toast.LENGTH_SHORT).show();
+                        Navigation.findNavController(getView()).navigate(R.id.action_createAccountFragment_to_logInFragment);
+                    }
 
-                if (myRef.child("users").orderByChild("mail").equalTo(mailText).get().isSuccessful()){
-                    Toast.makeText(getContext(), "Mail already exists, log in",Toast.LENGTH_SHORT).show();
+                }).addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        Toast.makeText(getContext(), "Mail already exists, log in",Toast.LENGTH_SHORT).show();
 
-                    return;
-                }
-                else {
-                    myRef.child("users").push().setValue(new UserInfo(mailText, passwordText));
-                    Toast.makeText(getContext(), "Account Successfully Created, log in",Toast.LENGTH_SHORT).show();
-                    Navigation.findNavController(getView()).navigate(R.id.action_createAccountFragment_to_logInFragment);
+                    }
+                });
 
-                }
-
-            }
-        });
+        };
+            });
         logInButton.setOnClickListener(view1->{
             Navigation.findNavController(getView()).navigate(R.id.action_createAccountFragment_to_logInFragment);
         });
 
     }
+
 };

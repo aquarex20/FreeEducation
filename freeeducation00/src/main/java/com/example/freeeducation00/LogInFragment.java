@@ -8,15 +8,21 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.example.freeeducation00.databinding.FragmentLogInBinding;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  */
@@ -27,6 +33,25 @@ public class LogInFragment extends Fragment {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference();
 
+    private void validateUser(HashMap valeurTrouvee){
+        EditText logInMail= binding.logInMail;
+        EditText logInPassword= binding.logInPassword;
+        Button logInButton=binding.logInButton;
+        String logInMailText= logInMail.getText().toString();
+        String logInPasswordText= logInPassword.getText().toString();
+        Map<String, String> doubleBraceMap  = new HashMap<String, String>() {{
+            put("mail", logInMailText);
+            put("password", logInPasswordText);
+        }};
+        if (valeurTrouvee.equals(doubleBraceMap)){
+            Navigation.findNavController(getView()).navigate(R.id.action_logInFragment_to_welcomePage);
+        }
+        else{
+            logInButton.setEnabled(true);
+        }
+
+
+    }
 
     public LogInFragment() {
         // Required empty public constructor
@@ -44,31 +69,50 @@ public class LogInFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         dbHandler = new DBHandler(getActivity());
 
-        String logInMail= binding.logInMail.getText().toString();
-        String logInPassword= binding.logInPassword.getText().toString();
-
-        binding.logInButton.setOnClickListener(view1 -> {
-            if (!logInMail.isEmpty() &&!logInPassword.isEmpty())
+        EditText logInMail= binding.logInMail;
+        EditText logInPassword= binding.logInPassword;
+         Button logInButton= binding.logInButton;
+        logInButton.setOnClickListener(view1 -> {
+            if (!logInMail.getText().toString().isEmpty() &&!logInPassword.getText().toString().isEmpty())
             {
-                if (myRef.child("users").orderByChild("mail").equalTo(logInMail).get().isSuccessful())
-
-                    Toast.makeText(getActivity(), "Mail exists",Toast.LENGTH_SHORT).show();
-
-                else{
-                    Toast.makeText(getActivity(), dbHandler.searchMessage,Toast.LENGTH_SHORT).show();
-                    Toast.makeText(getActivity(), "That works baby girl :)",Toast.LENGTH_SHORT).show();
-
-                }
+                logInButton.setEnabled(false);
+                String logInMailText= logInMail.getText().toString();
+                myRef.child("users").orderByChild("mail").equalTo(logInMailText).addChildEventListener(myChildListener);
 
             }
         });
         binding.createAccountButton.setOnClickListener(view1 -> {
             NavHostFragment.findNavController(this).navigate(R.id.action_logInFragment_to_createAccountFragment);
-
-
         });
+
     }
+    ChildEventListener myChildListener=new ChildEventListener() {
+        @Override
+        public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            validateUser((HashMap) snapshot.getValue());
+        }
+
+        @Override
+        public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+        }
+
+        @Override
+        public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+
+        }
+    };
+
 }

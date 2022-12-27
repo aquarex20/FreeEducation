@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_logInFragment_to_createAccountFragment"
             app:destination="@id/createAccountFragment" />
+        <action
+            android:id="@+id/action_logInFragment_to_welcomePage"
+            app:destination="@id/welcomePage" />
     </fragment>
     <fragment
         android:id="@+id/createAccountFragment"
@@ -23,4 +26,9 @@
             android:id="@+id/action_createAccountFragment_to_logInFragment"
             app:destination="@id/logInFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/welcomePage"
+        android:name="com.example.freeeducation00.welcomePage"
+        android:label="fragment_welcome_page"
+        tools:layout="@layout/fragment_welcome_page" />
 </navigation>

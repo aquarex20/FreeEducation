@@ -61,27 +61,58 @@ public class CreateAccountFragment extends Fragment {
 
             if (mailText!=""&&passwordText!="") {
                 db.addNewUser(mailText, passwordText);
-                myRef.child("users").orderByChild("mail").equalTo(mailText).get().addOnFailureListener(new OnFailureListener() {
+                myRef.child("users").orderByChild("mail").equalTo(mailText).addChildEventListener(new ChildEventListener() {
                     @Override
-                    public void onFailure(@NonNull Exception e) {
-                        myRef.child("users").push().setValue(new UserInfo(mailText, passwordText));
-                        Toast.makeText(getContext(), "Account Successfully Created, log in",Toast.LENGTH_SHORT).show();
-                        Navigation.findNavController(getView()).navigate(R.id.action_createAccountFragment_to_logInFragment);
+                    public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                        alreadyExists=true;
                     }
 
-                }).addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<DataSnapshot> task) {
-                        Toast.makeText(getContext(), "Mail already exists, log in",Toast.LENGTH_SHORT).show();
+                    public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
                     }
                 });
+                myRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        userExists(mailText, passwordText);
+                    }
+                });
 
-        };
+
+            };
             });
         logInButton.setOnClickListener(view1->{
             Navigation.findNavController(getView()).navigate(R.id.action_createAccountFragment_to_logInFragment);
         });
+
+    }
+    private void userExists(String mailText, String passwordText){
+        if (alreadyExists){
+            Toast.makeText(getContext(), "Mail already exists, log in",Toast.LENGTH_SHORT).show();
+            alreadyExists=false;
+        }
+        else {
+            myRef.child("users").push().setValue(new UserInfo(mailText, passwordText));
+            Toast.makeText(getContext(), "Account Successfully Created, log in",Toast.LENGTH_SHORT).show();
+            alreadyExists=false;
+            Navigation.findNavController(getView()).navigate(R.id.action_createAccountFragment_to_logInFragment);
+        }
 
     }
 

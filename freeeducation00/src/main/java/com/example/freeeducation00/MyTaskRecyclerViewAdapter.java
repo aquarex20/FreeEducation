@@ -1,11 +1,9 @@
 package com.example.freeeducation00;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,14 +11,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
+public class MyTaskRecyclerViewAdapter extends RecyclerView.Adapter<MyTaskRecyclerViewAdapter.ViewHolder> {
 
-    private List<Technology> myData;
+    private List<Task> myData;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
 
     // data is passed into the constructor
-    MyRecyclerViewAdapter(Context context, ArrayList<Technology> data) {
+    MyTaskRecyclerViewAdapter(Context context, ArrayList<Task> data) {
         this.mInflater = LayoutInflater.from(context);
         this.myData = data;
     }
@@ -28,17 +26,19 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     // inflates the row layout from xml when needed
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.text_row_item, parent, false);
+        View view = mInflater.inflate(R.layout.task_row_item, parent, false);
         return new ViewHolder(view);
     }
 
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Technology technology = myData.get(position);
-        holder.description.setText(String.valueOf(technology.getDescription()));
-        holder.title.setText(String.valueOf(technology.getTitle()));
-        holder.image.setImageResource(Math.toIntExact(technology.getImage()));
+        Task task = myData.get(position);
+        holder.description.setText(String.valueOf(task.getDescription()));
+        holder.title.setText(String.valueOf(task.getTitle()));
+        holder.websites.setText(String.valueOf(task.getWebsites()));
+        holder.videos.setText(String.valueOf(task.getVideos()));
+
     }
 
     // total number of rows
@@ -52,14 +52,15 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView description;
         TextView title;
-        ImageView image;
+        TextView websites;
+        TextView videos;
 
         ViewHolder(View itemView) {
             super(itemView);
-            description = itemView.findViewById(R.id.rowItemDescription);
-            title = itemView.findViewById(R.id.rowItemTitle);
-            image = itemView.findViewById(R.id.rowItemImage);
-
+            description = itemView.findViewById(R.id.taskDescription);
+            title = itemView.findViewById(R.id.taskTitle);
+            websites = itemView.findViewById(R.id.taskWebsites);
+            videos= itemView.findViewById(R.id.taskVideos);
             itemView.setOnClickListener(this);
         }
 
@@ -70,7 +71,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     }
 
     // convenience method for getting data at click position
-    Technology getItem(int id) {
+    Task getItem(int id) {
         return myData.get(id);
     }
 

@@ -5,19 +5,33 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.renderscript.ScriptGroup;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+
 import com.example.freeeducation00.databinding.FragmentCreateAccountBinding;
 import com.example.freeeducation00.databinding.FragmentWelcomePageBinding;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,14 +42,17 @@ public class welcomePage extends Fragment implements MyRecyclerViewAdapter.ItemC
     private FragmentWelcomePageBinding binding;
     MyRecyclerViewAdapter adapter;
 
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef = database.getReference();
+    private ArrayList<Technology> technologies = new ArrayList<>();
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_PARAM1 = "technologies";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private ArrayList<Technology> mParam1;
     private String mParam2;
 
     public welcomePage() {
@@ -51,11 +68,10 @@ public class welcomePage extends Fragment implements MyRecyclerViewAdapter.ItemC
      * @return A new instance of fragment welcomePage.
      */
     // TODO: Rename and change types and number of parameters
-    public static welcomePage newInstance(String param1, String param2) {
+    public static welcomePage newInstance(ArrayList<Technology> param1, String param2) {
         welcomePage fragment = new welcomePage();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putSerializable(ARG_PARAM1, param1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -63,17 +79,13 @@ public class welcomePage extends Fragment implements MyRecyclerViewAdapter.ItemC
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        technologies= (ArrayList<Technology>) getArguments().getSerializable(ARG_PARAM1);
         // Inflate the layout for this fragment
         binding= FragmentWelcomePageBinding.inflate(inflater, container, false);
 
@@ -85,15 +97,6 @@ public class welcomePage extends Fragment implements MyRecyclerViewAdapter.ItemC
         super.onViewCreated(view, savedInstanceState);
         RecyclerView myRecyclerView= binding.recyclerView;
         myRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        ArrayList<Technology> technologies = new ArrayList<>();
-        technologies.add(new Technology("Python", "The easiest language to start with!",R.drawable.python));
-        technologies.add(new Technology("C++", "The easiest language to start with!",R.drawable.cpp));
-        technologies.add(new Technology("Java", "The easiest language to start with!",R.drawable.java));
-
-        technologies.add(new Technology("Unity", "The easiest language to start with!",R.drawable.unity));
-
-        technologies.add(new Technology("Html", "The easiest language to start with!",R.drawable.html));
-
         myRecyclerView.setAdapter(new MyRecyclerViewAdapter(getContext(), technologies));
         adapter = new MyRecyclerViewAdapter(getContext(), technologies);
         adapter.setClickListener((MyRecyclerViewAdapter.ItemClickListener) this);
@@ -103,6 +106,10 @@ public class welcomePage extends Fragment implements MyRecyclerViewAdapter.ItemC
     @Override
     public void onItemClick(View view, int position) {
         Toast.makeText(getContext(), "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
+        Technology clickedTechnology=new Technology(adapter.getItem(position).getTitle(),adapter.getItem(position).getDescription(), adapter.getItem(position).getImage());
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("technology",  clickedTechnology);
+        Navigation.findNavController(getView()).navigate(R.id.action_welcomePage_to_displayTechnologyFragment,bundle);
     }
 
 }

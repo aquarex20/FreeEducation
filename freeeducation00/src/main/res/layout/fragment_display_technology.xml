@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DisplayTechnologyFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/technologyPresentationPageImage"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/technologyPresentationPageTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="TextView"
+            app:layout_constraintBottom_toTopOf="@+id/technologyPresentationPageDescription"
+            app:layout_constraintStart_toEndOf="@+id/technologyPresentationPageImage"
+            app:layout_constraintTop_toTopOf="@+id/technologyPresentationPageImage"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/technologyPresentationPageDescription"
+            android:layout_width="208dp"
+            android:layout_height="104dp"
+            android:layout_marginStart="4dp"
+            android:text="TextView"
+            app:layout_constraintBottom_toBottomOf="@+id/technologyPresentationPageImage"
+            app:layout_constraintStart_toEndOf="@+id/technologyPresentationPageImage" />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/LevelContainerView"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="369dp"
+            android:layout_height="415dp"
+            app:navGraph="@navigation/level_nav_graph"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/intermediateLevelButton"
+            tools:layout="@layout/fragment_level_technology" />
+
+        <Button
+            android:id="@+id/beginnerLevelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:text="Beginner"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/technologyPresentationPageDescription" />
+
+        <Button
+            android:id="@+id/intermediateLevelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Intermediate"
+            app:layout_constraintEnd_toStartOf="@+id/advancedLevelButton"
+            app:layout_constraintStart_toEndOf="@+id/beginnerLevelButton"
+            app:layout_constraintTop_toBottomOf="@+id/technologyPresentationPageDescription" />
+
+        <Button
+            android:id="@+id/advancedLevelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="20dp"
+            android:text="Advanced"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/technologyPresentationPageDescription" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

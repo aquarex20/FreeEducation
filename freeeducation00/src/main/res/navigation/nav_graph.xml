@@ -30,5 +30,21 @@
         android:id="@+id/welcomePage"
         android:name="com.example.freeeducation00.welcomePage"
         android:label="fragment_welcome_page"
-        tools:layout="@layout/fragment_welcome_page" />
+        tools:layout="@layout/fragment_welcome_page" >
+        <argument
+            android:name="technologies"
+            app:argType="com.example.freeeducation00.Technology" />
+        <action
+            android:id="@+id/action_welcomePage_to_displayTechnologyFragment"
+            app:destination="@id/displayTechnologyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/displayTechnologyFragment"
+        android:name="com.example.freeeducation00.DisplayTechnologyFragment"
+        android:label="fragment_display_technology"
+        tools:layout="@layout/fragment_display_technology" >
+        <argument
+            android:name="technology"
+            app:argType="com.example.freeeducation00.Technology" />
+    </fragment>
 </navigation>

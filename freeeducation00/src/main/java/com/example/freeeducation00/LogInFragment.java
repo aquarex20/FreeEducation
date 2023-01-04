@@ -17,8 +17,13 @@ import android.widget.EditText;
 
 import com.example.freeeducation00.databinding.FragmentLogInBinding;
 import com.example.freeeducation00.databinding.FragmentWelcomePageBinding;
+import com.google.android.gms.auth.api.identity.BeginSignInRequest;
+import com.google.android.gms.auth.api.identity.Identity;
+import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,7 +40,9 @@ public class LogInFragment extends Fragment {
     private FragmentLogInBinding binding;
     private DBHandler dbHandler;
     private ArrayList<Technology> technologies = new ArrayList<>();
-
+    private SignInClient oneTapClient;
+    private BeginSignInRequest signInRequest;
+    private FirebaseAuth mAuth;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference();
 
@@ -85,18 +92,40 @@ public class LogInFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        dbHandler = new DBHandler(getActivity());
 
         EditText logInMail= binding.logInMail;
         EditText logInPassword= binding.logInPassword;
-         Button logInButton= binding.logInButton;
+        Button logInButton= binding.logInButton;
+        mAuth = FirebaseAuth.getInstance();
         logInButton.setOnClickListener(view1 -> {
             if (!logInMail.getText().toString().isEmpty() &&!logInPassword.getText().toString().isEmpty())
             {
                 logInButton.setEnabled(false);
                 String logInMailText= logInMail.getText().toString();
                 myRef.child("users").orderByChild("mail").equalTo(logInMailText).addChildEventListener(myChildListener);
+                mAuth.signInWithEmailAndPassword(logInMailText, logInPassword.getText().toString()).addOnCompleteListener(
+                        new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()){
+                                    myRef.child("technologies").orderByKey().addChildEventListener(dataRecollectionListener);
 
+                                    myRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                            Bundle bundle = new Bundle();
+                                            bundle.putParcelableArrayList("technologies",  technologies);
+                                            Navigation.findNavController(getView()).navigate(R.id.action_logInFragment_to_welcomePage,bundle);
+                                        }
+                                    });
+                                }
+                                else {
+                                    logInButton.setEnabled(true);
+                                }
+
+                            }
+                        }
+                );
             }
         });
         binding.createAccountButton.setOnClickListener(view1 -> {
@@ -104,6 +133,7 @@ public class LogInFragment extends Fragment {
         });
 
     }
+
     ChildEventListener dataRecollectionListener= new ChildEventListener() {
         @Override
         public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {

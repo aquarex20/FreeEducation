@@ -18,6 +18,8 @@ import com.example.freeeducation00.databinding.FragmentCreateAccountBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,6 +35,7 @@ public class CreateAccountFragment extends Fragment {
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference();
+    private FirebaseAuth mAuth;
 
 
     public CreateAccountFragment() {
@@ -51,6 +54,7 @@ public class CreateAccountFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mAuth= FirebaseAuth.getInstance();
         EditText mail=binding.CreateAccountMail;
         EditText pswrd=binding.CreateAccountPassword;
         Button submitButton=binding.CreateAccountButtonCreate;
@@ -108,8 +112,20 @@ public class CreateAccountFragment extends Fragment {
             alreadyExists=false;
         }
         else {
-            myRef.child("users").push().setValue(new UserInfo(mailText, passwordText));
-            Toast.makeText(getContext(), "Account Successfully Created, log in",Toast.LENGTH_SHORT).show();
+            mAuth.createUserWithEmailAndPassword(mailText, passwordText).
+                    addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful())
+                            { Toast.makeText(getContext(), "Account Successfully Created, log in",Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                Toast.makeText(getContext(), "RegistrationError"+ task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+
+                            }
+                        }
+                                                                                               });
+                    myRef.child("users").push().setValue(new UserInfo(mailText, passwordText));
             alreadyExists=false;
             Navigation.findNavController(getView()).navigate(R.id.action_createAccountFragment_to_logInFragment);
         }

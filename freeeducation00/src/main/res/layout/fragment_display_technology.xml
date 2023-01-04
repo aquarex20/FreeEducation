@@ -35,8 +35,8 @@
 
         <TextView
             android:id="@+id/technologyPresentationPageDescription"
-            android:layout_width="208dp"
-            android:layout_height="104dp"
+            android:layout_width="214dp"
+            android:layout_height="126dp"
             android:layout_marginStart="4dp"
             android:text="TextView"
             app:layout_constraintBottom_toBottomOf="@+id/technologyPresentationPageImage"
